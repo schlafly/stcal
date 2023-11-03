@@ -125,7 +125,7 @@ def fit_ramps_casertano(
         read_noise.reshape(-1),
         read_time,
         read_pattern,
-        use_jump, include_diagnostic=True,
+        use_jump,
         **kwargs)
 
     parameters = output.parameters.reshape(orig_shape[1:] + (2,))
