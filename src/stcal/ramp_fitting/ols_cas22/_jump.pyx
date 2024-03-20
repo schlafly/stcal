@@ -380,7 +380,18 @@ cdef inline (int, float) _fit_statistic(float[:, :] pixel,
         stat = fmaxf(stat1, stat2)
 
         # If this is larger than the current max, update the max
-        if stat > max_stat:
+	epsilon = 1e-6
+	# it's not too rare to have two identically poor fits at different
+	# indices.  These can scatter high or low due to numerical noise
+	# leading different systems to choose different values.
+	# we can harden a bit against that if we require the new
+	# value to be more than the previous value plus some
+	# tiny fraction.  That's what we attempt here.
+	# This is a bit of a hack since this just introduces a new
+	# place where numerical noise can shift us around, but this
+	# is a better place since it avoids the `perfectly balanced' case
+	# that we expect is particularly common.
+        if stat > max_stat * (1 + epsilon):
             max_stat = stat
             argmax = stat_index
 
